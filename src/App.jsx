@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Loader } from "@googlemaps/js-api-loader";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyDcXGi6WXlz7W1v_mb_dGvfj4obn_ZxS9A"; // Replace with your real key
+const GOOGLE_MAPS_API_KEY = "YOUR_API_KEY";
 
 function App() {
   const streetViewRef = useRef(null);
@@ -9,19 +10,28 @@ function App() {
   const [result, setResult] = useState("");
 
   useEffect(() => {
-    fetch("/api/randomLocation")
-      .then((res) => res.json())
-      .then((data) => {
-        setActualPlace(data.answer);
-        const panorama = new window.google.maps.StreetViewPanorama(
-          streetViewRef.current,
-          {
-            position: { lat: data.lat, lng: data.lng },
-            pov: { heading: 100, pitch: 0 },
-            zoom: 1,
-          }
-        );
-      });
+    const loader = new Loader({
+      apiKey: GOOGLE_MAPS_API_KEY,
+      version: "weekly",
+      libraries: [], // optional
+    });
+
+    loader.load().then(() => {
+      fetch("/api/randomLocation")
+        .then((res) => res.json())
+        .then((data) => {
+          setActualPlace(data.answer);
+
+          const panorama = new window.google.maps.StreetViewPanorama(
+            streetViewRef.current,
+            {
+              position: { lat: data.lat, lng: data.lng },
+              pov: { heading: 100, pitch: 0 },
+              zoom: 1,
+            }
+          );
+        });
+    });
   }, []);
 
   const handleSubmit = () => {
