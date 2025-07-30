@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 
+const GOOGLE_MAPS_API_KEY = "AIzaSyDrjySHgzLoRv2p05yuu2Lw7ksCLW8h-pA";
+
 function App() {
   const streetViewRef = useRef(null);
   const [guess, setGuess] = useState("");
